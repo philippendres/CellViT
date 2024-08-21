@@ -15,7 +15,6 @@ from typing import Tuple
 
 import numpy as np
 import scipy
-from numba import njit, prange
 from scipy import ndimage
 from scipy.optimize import linear_sum_assignment
 from skimage.draw import polygon
@@ -34,7 +33,6 @@ def get_bounding_box(img):
     return [rmin, rmax, cmin, cmax]
 
 
-@njit
 def cropping_center(x, crop_shape, batch=False):
     """Crop an input image at the centre.
 
@@ -305,7 +303,6 @@ def polygons_to_label(
     return polygons_to_label_coord(coord, shape=shape, labels=ind)
 
 
-@njit(cache=True, fastmath=True)
 def intersection(boxA: np.ndarray, boxB: np.ndarray):
     """Compute area of intersection of two boxes.
 
@@ -336,7 +333,6 @@ def intersection(boxA: np.ndarray, boxB: np.ndarray):
     return dx * dy
 
 
-@njit(parallel=True)
 def get_bboxes(
     dist: np.ndarray, points: np.ndarray
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, int]:
@@ -371,7 +367,7 @@ def get_bboxes(
     angle_pi = 2 * math.pi / n_rays
     max_dist = 0
 
-    for i in prange(n_polys):
+    for i in range(n_polys):
         max_radius_outer = 0
         py = points[i, 0]
         px = points[i, 1]
